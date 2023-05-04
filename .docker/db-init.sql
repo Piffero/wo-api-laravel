@@ -1,0 +1,1 @@
+CREATE DATABASE IF NOT EXISTS project_wo_local_docker;

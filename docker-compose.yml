@@ -1,0 +1,43 @@
+version: '3.7'
+services:
+  api:
+    container_name: "wo-api"
+    build:
+      context: ./.docker
+      dockerfile: api.dockerfile
+      args:
+        - UID=$USUID
+        - GID=$GRPID    
+    user: $USUID:$GRPID
+    volumes:
+      - './:/var/www'
+      - './.docker/php.ini:/usr/local/etc/php/conf.d/docker.ini'
+    ports:
+    - '3000:3000'
+    networks:
+      - network_wo
+
+  db:
+    container_name: "wo-db"
+    build:
+      context: ./.docker
+      dockerfile: db.dockerfile
+    ports:
+      - '33376:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=root123
+      - MYSQL_DATABASE=project_wo_local_docker
+      - MYSQL_USER=wolocal
+      - MYSQL_PASSWORD=wolocal123
+    volumes:
+      - db_dados:/var/lib/mysql
+    networks:
+      - network_wo
+
+volumes:
+    db_dados:
+      driver: local
+
+networks:
+  network_wo:
+    driver: bridge
